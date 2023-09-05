@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16...3.24)
 
-project(lua-proj)
+project(lua-proj VERSION 5.4.4)
 
 set(LUA_MAIN_PROJECT OFF)
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
@@ -119,6 +119,7 @@ if (${LUA_INSTALL})
         NO_CHECK_REQUIRED_COMPONENTS_MACRO)
         
     write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/luaConfigVersion.cmake"
+        VERSION ${PROJECT_VERSION}
         COMPATIBILITY AnyNewerVersion)
         
     install(FILES
