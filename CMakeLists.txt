@@ -8,7 +8,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
 endif()
 set(CMAKE_DEBUG_POSTFIX "d")
 
-option(LUA_INSTALL "Generate install target" ${GLAD_MAIN_PROJECT})
+option(LUA_INSTALL "Generate install target" ${LUA_MAIN_PROJECT})
 
 set(LUA_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/lua/lualib.h
