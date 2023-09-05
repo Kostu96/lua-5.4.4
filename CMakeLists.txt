@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.16...3.24)
 
 project(lua-proj)
 
@@ -78,5 +78,8 @@ add_library(lua STATIC
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/include/lua PREFIX source FILES ${LUA_HEADERS})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src PREFIX source FILES ${LUA_SOURCES})
 
-target_include_directories(lua PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(lua INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+
 target_include_directories(lua PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/lua)
