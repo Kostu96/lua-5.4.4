@@ -2,6 +2,14 @@ cmake_minimum_required(VERSION 3.16...3.24)
 
 project(lua-proj)
 
+set(LUA_MAIN_PROJECT OFF)
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+  set(LUA_MAIN_PROJECT ON)
+endif()
+set(CMAKE_DEBUG_POSTFIX "d")
+
+option(LUA_INSTALL "Generate install target" ${GLAD_MAIN_PROJECT})
+
 set(LUA_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/lua/lualib.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/lua/lauxlib.h
@@ -83,3 +91,42 @@ target_include_directories(lua INTERFACE
     $<INSTALL_INTERFACE:include>)
 
 target_include_directories(lua PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/lua)
+
+set_target_properties(lua PROPERTIES
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}")
+
+add_library(lua::lua ALIAS lua)
+
+if (${LUA_INSTALL})
+    include(GNUInstallDirs)
+    
+    install(TARGETS lua
+        EXPORT luaTargets
+        INCLUDES DESTINATION include)
+    
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/lua DESTINATION include)
+    
+    install(EXPORT luaTargets
+        NAMESPACE lua::
+        FILE luaTargets.cmake
+        DESTINATION lib/cmake/lua)
+        
+    include(CMakePackageConfigHelpers)
+    
+    configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/luaConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/luaConfig.cmake"
+        INSTALL_DESTINATION "lib/cmake/lua"
+        NO_SET_AND_CHECK_MACRO
+        NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+        
+    write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/luaConfigVersion.cmake"
+        COMPATIBILITY AnyNewerVersion)
+        
+    install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/luaConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/luaConfigVersion.cmake
+        DESTINATION lib/cmake/lua)
+        
+    export(EXPORT luaTargets
+        NAMESPACE lua::
+        FILE "${CMAKE_CURRENT_BINARY_DIR}/luaTargets.cmake")
+endif()
